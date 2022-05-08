@@ -56,56 +56,14 @@ namespace BrightnessControl.MonitorController
             return true;
         }
 
-        #region debug
-
-        private void DebugFN()
-        {
-
-            foreach (var monitorHandle in _monitorHandles)
-            {
-                uint numberOfMonitors = 0;
-                Structures.PHYSICAL_MONITOR[] physicalMonitors;
-
-                //get physical monitors
-                Calls.GetNumberOfPhysicalMonitorsFromHMONITOR(monitorHandle, ref numberOfMonitors);
-                physicalMonitors = new Structures.PHYSICAL_MONITOR[numberOfMonitors];
-                //
-                Calls.GetPhysicalMonitorsFromHMONITOR(monitorHandle, numberOfMonitors, physicalMonitors);
-
-                foreach (var physicalMonitor in physicalMonitors)
-                {
-                    uint capabilities = 0u, colortemps = 0u;
-                    Calls.GetMonitorCapabilities(physicalMonitor.hPhysicalMonitor, ref capabilities, ref colortemps);
-
-                    //debugging
-                    continue;
-                }
-
-            }
-        }
-        #endregion
-
         private short GetPhysicalMonitorBrightness(IntPtr hPhysicalMonitor, bool retry = true)
         {
             short minimum = 0, current = 0, maximum = 0;
 
             bool getMonitorBrightnessSuccessful = Calls.GetMonitorBrightness(hPhysicalMonitor, ref minimum, ref current, ref maximum);
 
-            //reinitialize if handle is no longer valid (display turned off, etc)
-            if (!getMonitorBrightnessSuccessful)
-            {
-                if (retry)
-                {
-                    InitializeHandles();
-                    hPhysicalMonitor = _physicalMonitorHandles.First();
-                }
-                else
-                {
-                    throw new Win32Exception($"Could not get brightness for physical monitor with handle {hPhysicalMonitor}");
-                }
-
-                GetPhysicalMonitorBrightness(hPhysicalMonitor, retry = false);
-            }
+            //throw if failed
+            if (!getMonitorBrightnessSuccessful) throw new Win32Exception($"Could not get brightness for physical monitor with handle {hPhysicalMonitor}");
 
             return current;
         }
@@ -113,19 +71,33 @@ namespace BrightnessControl.MonitorController
         #region IMonitorController methods
         public short GetBrightness()
         {
-            //TODO: implement logic for multiple monitors
-            IntPtr hPhysicalMonitor = _physicalMonitorHandles.First();
+            List<short> brightnessLevels = new();
 
-            short brightness = GetPhysicalMonitorBrightness(hPhysicalMonitor);
+            for (int i = 0; i < _physicalMonitorHandles.Count;)
+            {
+                try
+                {
+                    short brightness = GetPhysicalMonitorBrightness(_physicalMonitorHandles[i++]);
+                    brightnessLevels.Add(brightness);
+                }
+                catch (Win32Exception exception)
+                {
+                    //reinitialize and retry (reset i)
+                    InitializeHandles();
+                    i = 0;
+                }
+            }
 
-            return brightness;
+            //TODO: return list
+            return brightnessLevels.First();
         }
 
         public void SetBrightness(short value)
         {
             _physicalMonitorHandles.ForEach(x =>
             {
-                Calls.SetMonitorBrightness(x, value);
+                bool setMonitorBrightnessSuccessful = Calls.SetMonitorBrightness(x, value);
+                if (!setMonitorBrightnessSuccessful) throw new Win32Exception($"Failed to set brightness on monitor with handle {x}");
             });
         }
         #endregion
