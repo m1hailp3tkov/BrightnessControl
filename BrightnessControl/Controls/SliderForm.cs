@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using BrightnessControl.Native;
 
 namespace BrightnessControl
 {
@@ -53,14 +44,17 @@ namespace BrightnessControl
                 this.label.Text = this.trackBar.Value.ToString();
                 return;
             }
-            new Thread(() =>
+
+            try
             {
-                Thread.CurrentThread.IsBackground = true;
-
-                monitorController.GetBrightness();
-                monitorController.SetBrightness((short)brightness);
-
-            }).Start();
+                //TODO: Multiple monitors
+                monitorController.Monitors.First().SetBrightness((short)brightness);
+            }
+            catch (Win32Exception ex)
+            {
+                monitorController.Initialize();
+                UpdateBrightness(frontEnd);
+            }
         }
 
         private void ActivateForm()
@@ -128,7 +122,7 @@ namespace BrightnessControl
         // notifyicon events
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Left) this.ActivateForm();
+            if (e.Button == MouseButtons.Left) this.ActivateForm();
         }
     }
 }

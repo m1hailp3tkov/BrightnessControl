@@ -13,7 +13,8 @@ namespace BrightnessControl
             IMonitorController monitorController = new Win32MonitorController();
             ApplicationConfiguration.Initialize();
 
-            SliderForm sliderForm = new SliderForm(monitorController.GetBrightness(), monitorController);
+            //TODO: multiple monitors
+            SliderForm sliderForm = new SliderForm(monitorController.Monitors.First().GetBrightness(), monitorController);
 
             Application.Run();
         }

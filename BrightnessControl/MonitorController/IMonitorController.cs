@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BrightnessControl
+﻿namespace BrightnessControl
 {
     public interface IMonitorController
     {
-        short GetBrightness();
+        IReadOnlyList<IPhysicalMonitor> Monitors { get;}
 
-        void SetBrightness(short value);
+        void Initialize();
     }
 }

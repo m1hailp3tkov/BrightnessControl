@@ -88,7 +88,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.ClientSize = new System.Drawing.Size(319, 48);
+            this.ClientSize = new System.Drawing.Size(319, 87);
             this.Controls.Add(this.brightnessSymbolLabel);
             this.Controls.Add(this.label);
             this.Controls.Add(this.trackBar);
