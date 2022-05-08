@@ -83,6 +83,7 @@ namespace BrightnessControl.MonitorController
                 catch (Win32Exception exception)
                 {
                     //reinitialize and retry (reset i)
+                    brightnessLevels = new();
                     InitializeHandles();
                     i = 0;
                 }
