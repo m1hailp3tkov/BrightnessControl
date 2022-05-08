@@ -1,4 +1,6 @@
 ﻿using BrightnessControl.Native;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace BrightnessControl.MonitorController
 {
@@ -22,7 +24,7 @@ namespace BrightnessControl.MonitorController
             bool getMonitorBrightnessSuccessful = Calls.GetMonitorBrightness(Handle, ref minimum, ref current, ref maximum);
 
             //throw if failed
-            if (!getMonitorBrightnessSuccessful) throw new Win32Exception($"Could not get brightness for physical monitor with handle {Handle}");
+            if (!getMonitorBrightnessSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
 
             return current;
         }
@@ -30,7 +32,7 @@ namespace BrightnessControl.MonitorController
         public void SetBrightness(short value)
         {
             bool setMonitorBrightnessSuccessful = Calls.SetMonitorBrightness(Handle, value);
-            if (!setMonitorBrightnessSuccessful) throw new Win32Exception($"Could not set brightness for physical monitor with handle {Handle}");
+            if (!setMonitorBrightnessSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
         public bool Equals(PhysicalMonitor? other)

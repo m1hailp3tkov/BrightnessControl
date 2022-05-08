@@ -1,4 +1,5 @@
 ﻿using BrightnessControl.Native;
+using System.ComponentModel;
 
 namespace BrightnessControl
 {
