@@ -17,19 +17,27 @@ namespace BrightnessControl.Controls
         public BrightnessBlock(IPhysicalMonitor monitor)
         {
             _monitor = monitor;
+
             InitializeComponent();
+
+            this.label.Text = monitor.Brightness.ToString();
+            this.trackBar.Value = monitor.Brightness;
         }
 
         private void trackBar_ValueChanged(object sender, EventArgs e)
         {
             this.label.Text = trackBar.Value.ToString();
+        }
+
+        private void trackBar_MouseUp(object sender, MouseEventArgs e)
+        {
             try
             {
                 _monitor.Brightness = (short)trackBar.Value;
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Error", exception.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

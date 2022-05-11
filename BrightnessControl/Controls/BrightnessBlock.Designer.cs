@@ -1,4 +1,6 @@
-﻿namespace BrightnessControl.Controls
+﻿using BrightnessControl.Helpers;
+
+namespace BrightnessControl.Controls
 {
     partial class BrightnessBlock
     {
@@ -36,21 +38,25 @@
             // trackBar
             // 
             this.trackBar.LargeChange = 20;
-            this.trackBar.Location = new System.Drawing.Point(3, 3);
+            this.trackBar.Location = new System.Drawing.Point(10, 11);
             this.trackBar.Maximum = 100;
             this.trackBar.Name = "trackBar";
-            this.trackBar.Size = new System.Drawing.Size(279, 45);
+            this.trackBar.Size = new System.Drawing.Size(270, 45);
             this.trackBar.TabIndex = 0;
+            this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            this.trackBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBar_MouseUp);
             // 
             // label
             // 
-            this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(287, 13);
+            this.label.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label.Location = new System.Drawing.Point(280, 12);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(38, 15);
+            this.label.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label.Size = new System.Drawing.Size(38, 18);
             this.label.TabIndex = 1;
-            this.label.Text = "label1";
+            this.label.Text = "100";
+            this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // BrightnessBlock
             // 
@@ -60,7 +66,7 @@
             this.Controls.Add(this.trackBar);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "BrightnessBlock";
-            this.Size = new System.Drawing.Size(320, 45);
+            this.Size = new System.Drawing.Size(ApplicationConstants.WINDOW_WIDTH, ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

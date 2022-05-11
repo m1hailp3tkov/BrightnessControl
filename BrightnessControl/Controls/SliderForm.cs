@@ -1,38 +1,29 @@
 ﻿using BrightnessControl.Controls;
 using BrightnessControl.Native;
 using System.ComponentModel;
+using BrightnessControl.Helpers;
 
 namespace BrightnessControl
 {
     public partial class SliderForm : Form
     {
-        private const int TRACKBAR_CONTAINER_HEIGHT = 45;
-        private const int WINDOW_WIDTH = 320;
-
         private IMonitorController monitorController;
-        private Screen screen;
-
-        public Point GetLocation()
-        {
-            return new Point(100, 100);
-        }
-
-        public void OnLoad(int monitorCount)
-        {
-            this.Height = monitorCount == 0 ? TRACKBAR_CONTAINER_HEIGHT : TRACKBAR_CONTAINER_HEIGHT * monitorCount;
-            this.Width = WINDOW_WIDTH;
-        }
-
         public SliderForm(IMonitorController monitorController)
         {
             this.monitorController = monitorController;
             
             InitializeComponent();
-            OnLoad(monitorController.Monitors.Count);
 
-            foreach(var monitor in monitorController.Monitors)
+            this.Height = monitorController.Monitors.Count == 0 
+                ? ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT 
+                : ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
+            this.Width = ApplicationConstants.WINDOW_WIDTH;
+
+            foreach (var monitor in monitorController.Monitors)
             {
-                this.flowLayoutPanel.Controls.Add(new BrightnessBlock(monitor));
+                //if(monitor.HasBrightnessCapability) 
+                    this.flowLayoutPanel
+                        .Controls.Add(new BrightnessBlock(monitor));
             }
 
             // add right click exit to notifyicon
@@ -44,18 +35,14 @@ namespace BrightnessControl
 
         private void ActivateForm()
         {
-            //show and focus window
-            //this.visible = true;
             this.Show();
             this.Activate();
             this.WindowState = FormWindowState.Normal;
-            //this.trackBar.Focus();
             this.BringToFront();
         }
 
         private void DeactivateForm()
         {
-            //this.visible = false;
             this.Hide();
         }
 
@@ -78,11 +65,6 @@ namespace BrightnessControl
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) this.ActivateForm();
-        }
-
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }
