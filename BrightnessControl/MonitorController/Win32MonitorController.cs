@@ -30,9 +30,11 @@ namespace BrightnessControl.MonitorController
 
             //throw exception if failed
             if (!enumerationSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
+
+            _monitors = _monitors.Distinct().ToList();
         }
 
-        protected virtual bool Callback(IntPtr hMonitor, IntPtr hDC, ref Structures.Rect pRect, int dwData)
+        protected virtual bool Callback(IntPtr hMonitor, IntPtr hDC, ref Structures.RECT pRect, int dwData)
         {
             uint numberOfMonitors = 0;
             Structures.PHYSICAL_MONITOR[] physicalMonitors;
@@ -49,7 +51,10 @@ namespace BrightnessControl.MonitorController
             if (!getNumberOfMonitorsSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
 
             //add to monitor list
-            _monitors.AddRange(physicalMonitors.Select(x => new PhysicalMonitor(x.hPhysicalMonitor)));
+            foreach(var physicalMonitor in physicalMonitors)
+            {
+                _monitors.Add(new PhysicalMonitor(physicalMonitor.hPhysicalMonitor, _monitors.Count));
+            }
 
             //Continue enumeration
             return true;

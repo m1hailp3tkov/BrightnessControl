@@ -8,10 +8,17 @@ namespace BrightnessControl.Native
         [DllImport("user32.dll", EntryPoint = "MonitorFromWindow", SetLastError = true)]
         public static extern IntPtr MonitorFromWindow([In] IntPtr hwnd, uint dwFlags);
 
-
         [DllImport("user32.dll")]
         public static extern bool EnumDisplayMonitors(IntPtr hDC, IntPtr lpRect, EnumDisplayMonitorsCallback callback, int dwData);
         #endregion
+
+        [DllImport("User32.dll")]
+        public static extern bool EnumDisplayDevices(string lpDevice, int iDevNum, ref Structures.DISPLAY_DEVICE lpDisplayDevice, int dwFlags);
+
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool GetMonitorInfo(IntPtr hmonitor, [In, Out] ref Structures.MONITORINFOEX info);
+
+
 
         #region dxva2.dll
         [DllImport("dxva2.dll", EntryPoint = "GetNumberOfPhysicalMonitorsFromHMONITOR", SetLastError = true)]
@@ -31,7 +38,7 @@ namespace BrightnessControl.Native
 
         [DllImport("dxva2.dll", EntryPoint = "GetMonitorTechnologyType", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMonitorTechnologyType(IntPtr hMonitor, ref Structures.MC_DISPLAY_TECHNOLOGY_TYPE pdtyDisplayTechnologyType);
+        public static extern bool GetMonitorTechnologyType(IntPtr hMonitor, ref Flags.MC_DISPLAY_TECHNOLOGY_TYPE pdtyDisplayTechnologyType);
 
 
         [DllImport("dxva2.dll", EntryPoint = "GetMonitorCapabilities", SetLastError = true)]
@@ -50,7 +57,9 @@ namespace BrightnessControl.Native
         #endregion
 
         #region Delegates
-        public delegate bool EnumDisplayMonitorsCallback(IntPtr hMonitor, IntPtr hDC, ref Structures.Rect pRect, int dwData);
+        public delegate bool EnumDisplayMonitorsCallback(IntPtr hMonitor, IntPtr hDC, ref Structures.RECT pRect, int dwData);
+
+        public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Structures.RECT lprcMonitor, IntPtr dwData);
         #endregion
     }
 }

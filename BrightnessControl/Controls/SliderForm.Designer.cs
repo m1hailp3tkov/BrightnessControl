@@ -95,7 +95,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "SliderForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SliderForm";
             this.Activated += new System.EventHandler(this.SliderForm_Activated);
             this.Deactivate += new System.EventHandler(this.SliderForm_Deactivate);

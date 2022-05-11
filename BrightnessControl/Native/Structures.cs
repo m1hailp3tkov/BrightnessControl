@@ -4,8 +4,11 @@ namespace BrightnessControl.Native
 {
     public class Structures
     {
+        private const int CCHDEVICENAME = 32;
+
+
         [StructLayout(LayoutKind.Sequential)]
-        public struct Rect
+        public struct RECT
         {
             public int left;
             public int top;
@@ -22,25 +25,38 @@ namespace BrightnessControl.Native
             public string szPhysicalMonitorDescription;
         }
 
-        public enum MC_DISPLAY_TECHNOLOGY_TYPE
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public struct DISPLAY_DEVICE
         {
-            MC_SHADOW_MASK_CATHODE_RAY_TUBE,
+            [MarshalAs(UnmanagedType.U4)]
+            public int cb;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string DeviceName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceString;
+            [MarshalAs(UnmanagedType.U4)]
+            public Flags.DisplayDeviceStateFlags StateFlags;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceID;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceKey;
+        }
 
-            MC_APERTURE_GRILL_CATHODE_RAY_TUBE,
-
-            MC_THIN_FILM_TRANSISTOR,
-
-            MC_LIQUID_CRYSTAL_ON_SILICON,
-
-            MC_PLASMA,
-
-            MC_ORGANIC_LIGHT_EMITTING_DIODE,
-
-            MC_ELECTROLUMINESCENT,
-
-            MC_MICROELECTROMECHANICAL,
-
-            MC_FIELD_EMISSION_DEVICE,
+        /// <summary>
+        /// The MONITORINFOEX structure contains information about a display monitor.
+        /// The GetMonitorInfo function stores information into a MONITORINFOEX structure or a MONITORINFO structure.
+        /// The MONITORINFOEX structure is a superset of the MONITORINFO structure. The MONITORINFOEX structure adds a string member to contain a name 
+        /// for the display monitor.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct MONITORINFOEX
+        {
+            public int Size;
+            public RECT Monitor;
+            public RECT WorkArea;
+            public uint Flags;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string DeviceName;
         }
     }
 }

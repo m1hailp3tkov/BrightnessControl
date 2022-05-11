@@ -2,8 +2,6 @@
 {
     public interface IPhysicalMonitor
     {
-        short GetBrightness();
-
-        void SetBrightness(short value);
+        short Brightness { get; set; }
     }
 }

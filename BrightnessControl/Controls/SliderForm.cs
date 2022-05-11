@@ -49,7 +49,10 @@ namespace BrightnessControl
             try
             {
                 //TODO: Multiple monitors
-                monitorController.Monitors.First().SetBrightness((short)brightness);
+                foreach (var physicalMonitor in monitorController.Monitors)
+                {
+                    physicalMonitor.Brightness = (short)brightness;
+                }
             }
             catch (Win32Exception ex)
             {
