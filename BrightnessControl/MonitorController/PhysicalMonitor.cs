@@ -17,9 +17,9 @@ namespace BrightnessControl.MonitorController
         private IntPtr _handle;
         private DISPLAY_DEVICE _device;
 
-        public IntPtr Handle { get => _handle; }
+        public IntPtr Handle => _handle;
         public int DeviceNumber { get; private set; }
-        public bool HasBrightnessCapability { get; set; }
+        public bool HasBrightnessCapability { get; private set; }
 
         public short Brightness
         {
@@ -39,10 +39,10 @@ namespace BrightnessControl.MonitorController
             return this.Handle == other.Handle;
         }
 
-        public PhysicalMonitor(IntPtr handle, int monitorNumber)
+        public PhysicalMonitor(IntPtr handle, int deviceNumber)
         {
             this._handle = handle;
-            this.DeviceNumber = monitorNumber;
+            this.DeviceNumber = deviceNumber;
             this._device = new DISPLAY_DEVICE();
             _device.cb = Marshal.SizeOf(_device);
 

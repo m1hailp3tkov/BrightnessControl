@@ -11,13 +11,16 @@ namespace BrightnessControl.Native
 
         [DllImport("user32.dll")]
         public static extern bool EnumDisplayMonitors(IntPtr hDC, IntPtr lpRect, EnumDisplayMonitorsCallback callback, int dwData);
-        #endregion
 
         [DllImport("User32.dll")]
         public static extern bool EnumDisplayDevices(string lpDevice, int iDevNum, ref Structures.DISPLAY_DEVICE lpDisplayDevice, int dwFlags);
 
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool GetMonitorInfo(IntPtr hmonitor, [In, Out] ref Structures.MONITORINFOEX info);
+
+        [DllImport("user32.dll")]
+        public extern static int SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
+        #endregion
 
 
 

@@ -1,64 +1,45 @@
-﻿using BrightnessControl.Native;
+﻿using BrightnessControl.Controls;
+using BrightnessControl.Native;
 using System.ComponentModel;
 
 namespace BrightnessControl
 {
     public partial class SliderForm : Form
     {
+        private const int TRACKBAR_CONTAINER_HEIGHT = 45;
+        private const int WINDOW_WIDTH = 320;
+
         private IMonitorController monitorController;
+        private Screen screen;
 
-        private int brightness;
+        public Point GetLocation()
+        {
+            return new Point(100, 100);
+        }
 
-        public SliderForm(int brightness, IMonitorController monitorController)
+        public void OnLoad(int monitorCount)
+        {
+            this.Height = monitorCount == 0 ? TRACKBAR_CONTAINER_HEIGHT : TRACKBAR_CONTAINER_HEIGHT * monitorCount;
+            this.Width = WINDOW_WIDTH;
+        }
+
+        public SliderForm(IMonitorController monitorController)
         {
             this.monitorController = monitorController;
-            this.brightness = brightness;
-
-            // set start position
-            this.StartPosition = FormStartPosition.Manual;
-            // TODO: CONSTANTS
-            this.Location = new Point(1605, 1005);
-
+            
             InitializeComponent();
+            OnLoad(monitorController.Monitors.Count);
+
+            foreach(var monitor in monitorController.Monitors)
+            {
+                this.flowLayoutPanel.Controls.Add(new BrightnessBlock(monitor));
+            }
 
             // add right click exit to notifyicon
             // TODO: move to design?
             var exitItem = new ToolStripMenuItem("Exit", null, (sender, e) => Application.Exit());
             notifyIcon.ContextMenuStrip = new ContextMenuStrip();
             notifyIcon.ContextMenuStrip.Items.Add(exitItem);
-
-            //initialize trackbar and label values
-            this.trackBar.Value = this.brightness;
-            this.label.Text = brightness.ToString();
-
-            //set focus to trackbar
-            this.trackBar.Focus();
-        }
-
-        // specific events
-        private void UpdateBrightness(bool frontEnd = true)
-        {
-            this.brightness = trackBar.Value;
-
-            if (frontEnd)
-            {
-                this.label.Text = this.trackBar.Value.ToString();
-                return;
-            }
-
-            try
-            {
-                //TODO: Multiple monitors
-                foreach (var physicalMonitor in monitorController.Monitors)
-                {
-                    physicalMonitor.Brightness = (short)brightness;
-                }
-            }
-            catch (Win32Exception ex)
-            {
-                monitorController.Initialize();
-                UpdateBrightness(frontEnd);
-            }
         }
 
         private void ActivateForm()
@@ -68,7 +49,7 @@ namespace BrightnessControl
             this.Show();
             this.Activate();
             this.WindowState = FormWindowState.Normal;
-            this.trackBar.Focus();
+            //this.trackBar.Focus();
             this.BringToFront();
         }
 
@@ -83,24 +64,6 @@ namespace BrightnessControl
             Application.Exit();
         }
 
-
-        // update events
-        private void trackBar_KeyUp(object sender, KeyEventArgs e)
-        {
-            UpdateBrightness(false);
-        }
-
-        private void trackBar_MouseUp(object sender, MouseEventArgs e)
-        {
-            UpdateBrightness(false);
-        }
-
-        private void trackBar_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateBrightness();
-        }
-
-
         // hide events
         private void trackBar_KeyDown(object sender, KeyEventArgs e)
         {
@@ -111,22 +74,15 @@ namespace BrightnessControl
             }
         }
 
-        private void SliderForm_Deactivate(object sender, EventArgs e)
-        {
-            this.DeactivateForm();
-        }
-
-
-        // show events
-        private void SliderForm_Activated(object sender, EventArgs e)
-        {
-            this.ActivateForm();
-        }
-
         // notifyicon events
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) this.ActivateForm();
+        }
+
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
