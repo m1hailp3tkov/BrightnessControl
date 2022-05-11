@@ -21,7 +21,7 @@ namespace BrightnessControl.Controls
             InitializeComponent();
 
             this.label.Text = monitor.Brightness.ToString();
-            this.trackBar.Value = monitor.Brightness;
+            this.trackBar.Value = (int)monitor.Brightness;
         }
 
         private void trackBar_ValueChanged(object sender, EventArgs e)
@@ -33,7 +33,7 @@ namespace BrightnessControl.Controls
         {
             try
             {
-                _monitor.Brightness = (short)trackBar.Value;
+                _monitor.Brightness = (uint)trackBar.Value;
             }
             catch (Exception exception)
             {

@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SliderForm));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon
@@ -61,10 +60,10 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "SliderForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SliderForm";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SliderForm_FormClosed);
-            this.flowLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

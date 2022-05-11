@@ -8,6 +8,14 @@ namespace BrightnessControl
     public partial class SliderForm : Form
     {
         private IMonitorController monitorController;
+
+        private Point GetLocation()
+        {
+            int x = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
+            int y = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
+            return new Point(x, y);
+        }
+
         public SliderForm(IMonitorController monitorController)
         {
             this.monitorController = monitorController;
@@ -18,6 +26,8 @@ namespace BrightnessControl
                 ? ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT 
                 : ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
             this.Width = ApplicationConstants.WINDOW_WIDTH;
+
+            this.Location = GetLocation();
 
             foreach (var monitor in monitorController.Monitors)
             {

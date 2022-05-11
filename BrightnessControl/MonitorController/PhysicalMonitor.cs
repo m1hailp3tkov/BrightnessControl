@@ -12,16 +12,16 @@ namespace BrightnessControl.MonitorController
     {
         private uint _capabilitiesFlags = 0;
         private uint _supportedColorTemperatures = 0;
-        private short _minBrightness = 0, _maxBrightness = 0, _currentBrightness = 0;
+        private uint _minBrightness = 0, _maxBrightness = 0, _currentBrightness = 0;
 
         private IntPtr _handle;
         private DISPLAY_DEVICE _device;
 
         public IntPtr Handle => _handle;
         public int DeviceNumber { get; private set; }
-        public bool HasBrightnessCapability { get; private set; }
+        //public bool HasBrightnessCapability { get; private set; }
 
-        public short Brightness
+        public uint Brightness
         {
             get => _currentBrightness;
             set
@@ -49,12 +49,8 @@ namespace BrightnessControl.MonitorController
             // get device information
             Attempt(EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
 
-            Attempt(GetMonitorCapabilities(handle, ref _capabilitiesFlags, ref _supportedColorTemperatures));
-
-            // check if the monitor has the capability to modify brightness
-            HasBrightnessCapability = ((MonitorCapabilities)_capabilitiesFlags).HasFlag(MonitorCapabilities.MC_CAPS_BRIGHTNESS);
-
-            if (HasBrightnessCapability) Attempt(GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness));
+            // get brightness values
+            Attempt(GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness));
         }
     }
 }

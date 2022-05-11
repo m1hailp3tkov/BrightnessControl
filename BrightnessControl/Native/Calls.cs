@@ -52,12 +52,12 @@ namespace BrightnessControl.Native
 
         [DllImport("dxva2.dll", EntryPoint = "SetMonitorBrightness", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetMonitorBrightness(IntPtr hMonitor, short brightness);
+        public static extern bool SetMonitorBrightness(IntPtr hMonitor, uint brightness);
 
 
         [DllImport("dxva2.dll", EntryPoint = "GetMonitorBrightness", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMonitorBrightness(IntPtr hMonitor, ref short pdwMinimumBrightness, ref short pdwCurrentBrightness, ref short pdwMaximumBrightness);
+        public static extern bool GetMonitorBrightness(IntPtr hMonitor, ref uint pdwMinimumBrightness, ref uint pdwCurrentBrightness, ref uint pdwMaximumBrightness);
         #endregion
 
         #region Delegates

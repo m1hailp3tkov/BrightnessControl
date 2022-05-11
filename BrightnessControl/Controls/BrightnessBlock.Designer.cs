@@ -38,7 +38,7 @@ namespace BrightnessControl.Controls
             // trackBar
             // 
             this.trackBar.LargeChange = 20;
-            this.trackBar.Location = new System.Drawing.Point(10, 11);
+            this.trackBar.Location = new System.Drawing.Point(10, 13);
             this.trackBar.Maximum = 100;
             this.trackBar.Name = "trackBar";
             this.trackBar.Size = new System.Drawing.Size(270, 45);
@@ -50,7 +50,7 @@ namespace BrightnessControl.Controls
             // label
             // 
             this.label.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label.Location = new System.Drawing.Point(280, 12);
+            this.label.Location = new System.Drawing.Point(280, 13);
             this.label.Name = "label";
             this.label.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label.Size = new System.Drawing.Size(38, 18);
@@ -66,7 +66,7 @@ namespace BrightnessControl.Controls
             this.Controls.Add(this.trackBar);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "BrightnessBlock";
-            this.Size = new System.Drawing.Size(ApplicationConstants.WINDOW_WIDTH, ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT);
+            this.Size = new System.Drawing.Size(320, 45);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
