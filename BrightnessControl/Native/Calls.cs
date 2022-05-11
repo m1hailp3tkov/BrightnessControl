@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace BrightnessControl.Native
 {
@@ -60,6 +61,14 @@ namespace BrightnessControl.Native
         public delegate bool EnumDisplayMonitorsCallback(IntPtr hMonitor, IntPtr hDC, ref Structures.RECT pRect, int dwData);
 
         public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Structures.RECT lprcMonitor, IntPtr dwData);
+        #endregion
+
+        #region Helpers
+        public static void Attempt(bool methodCallResult)
+        {
+            if (!methodCallResult) throw new Win32Exception(Marshal.GetLastWin32Error());
+            return;
+        }
         #endregion
     }
 }

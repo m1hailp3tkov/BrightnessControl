@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using BrightnessControl.Native;
+using static BrightnessControl.Native.Calls;
+using static BrightnessControl.Native.Constants;
 
 namespace BrightnessControl.MonitorController
 {
@@ -26,10 +28,7 @@ namespace BrightnessControl.MonitorController
             _monitors = new List<IPhysicalMonitor>();
 
             //Enumerate all monitors
-            bool enumerationSuccessful = Calls.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, Callback, 0);
-
-            //throw exception if failed
-            if (!enumerationSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
+            Attempt(EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, Callback, 0));
 
             _monitors = _monitors.Distinct().ToList();
         }
@@ -40,21 +39,16 @@ namespace BrightnessControl.MonitorController
             Structures.PHYSICAL_MONITOR[] physicalMonitors;
 
             //get number of physical monitors
-            bool getNumberOfMonitorsSuccessful = Calls.GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref numberOfMonitors);
-            if (!getNumberOfMonitorsSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
+            Attempt(GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref numberOfMonitors));
 
             //initialize physical monitor array with specified size
             physicalMonitors = new Structures.PHYSICAL_MONITOR[numberOfMonitors];
 
             //get physical monitors
-            bool getPhysicalMonitorsSuccessful = Calls.GetPhysicalMonitorsFromHMONITOR(hMonitor, numberOfMonitors, physicalMonitors);
-            if (!getNumberOfMonitorsSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
+            Attempt(GetPhysicalMonitorsFromHMONITOR(hMonitor, numberOfMonitors, physicalMonitors));
 
             //add to monitor list
-            foreach(var physicalMonitor in physicalMonitors)
-            {
-                _monitors.Add(new PhysicalMonitor(physicalMonitor.hPhysicalMonitor, _monitors.Count));
-            }
+            foreach(var physicalMonitor in physicalMonitors) _monitors.Add(new PhysicalMonitor(physicalMonitor.hPhysicalMonitor, _monitors.Count));
 
             //Continue enumeration
             return true;

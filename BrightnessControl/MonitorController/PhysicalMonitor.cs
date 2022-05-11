@@ -1,6 +1,10 @@
 ﻿using BrightnessControl.Native;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using static BrightnessControl.Native.Calls;
+using static BrightnessControl.Native.Constants;
+using static BrightnessControl.Native.Flags;
+using static BrightnessControl.Native.Structures;
 
 namespace BrightnessControl.MonitorController
 {
@@ -11,55 +15,46 @@ namespace BrightnessControl.MonitorController
         private short _minBrightness = 0, _maxBrightness = 0, _currentBrightness = 0;
 
         private IntPtr _handle;
-        private Structures.DISPLAY_DEVICE _device;
+        private DISPLAY_DEVICE _device;
 
+        public IntPtr Handle { get => _handle; }
         public int DeviceNumber { get; private set; }
+        public bool HasBrightnessCapability { get; set; }
 
         public short Brightness
         {
             get => _currentBrightness;
-            set => SetBrightness(value);
-        }
+            set
+            {
+                if (value < _minBrightness || value > _maxBrightness)
+                    throw new ArgumentOutOfRangeException(nameof(value), $"Brightness param is out of acceptable range for monitor [{_minBrightness} ~ {_maxBrightness}]");
 
-        public PhysicalMonitor(IntPtr handle, int monitorNumber)
-        {
-            this._handle = handle;
-            this.DeviceNumber = monitorNumber;
-            this._device = new Structures.DISPLAY_DEVICE();
-            _device.cb = Marshal.SizeOf(_device);
-
-            Calls.EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0);
-
-            bool getMonitorCapabilitiesSuccess = Calls.GetMonitorCapabilities(handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
-            if (!getMonitorCapabilitiesSuccess) throw new Win32Exception(Marshal.GetLastWin32Error());
-
-            this.GetBrightness();
-        }
-
-
-        public IntPtr Handle { get => _handle; }
-
-        public void GetBrightness()
-        {
-            bool getMonitorBrightnessSuccessful = Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
-
-            //throw if failed
-            if (!getMonitorBrightnessSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
-        }
-
-        public void SetBrightness(short value)
-        {
-            if (value < _minBrightness || value > _maxBrightness)
-                throw new ArgumentOutOfRangeException(nameof(value), $"Brightness param is out of acceptable range for monitor [{_minBrightness} ~ {_maxBrightness}]");
-
-            bool setMonitorBrightnessSuccessful = Calls.SetMonitorBrightness(Handle, value);
-            if (!setMonitorBrightnessSuccessful) throw new Win32Exception(Marshal.GetLastWin32Error());
+                Attempt(SetMonitorBrightness(Handle, value));
+            }
         }
 
         public bool Equals(PhysicalMonitor? other)
         {
             if (other == null) return false;
             return this.Handle == other.Handle;
+        }
+
+        public PhysicalMonitor(IntPtr handle, int monitorNumber)
+        {
+            this._handle = handle;
+            this.DeviceNumber = monitorNumber;
+            this._device = new DISPLAY_DEVICE();
+            _device.cb = Marshal.SizeOf(_device);
+
+            // get device information
+            Attempt(EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
+
+            Attempt(GetMonitorCapabilities(handle, ref _capabilitiesFlags, ref _supportedColorTemperatures));
+
+            // check if the monitor has the capability to modify brightness
+            HasBrightnessCapability = ((MonitorCapabilities)_capabilitiesFlags).HasFlag(MonitorCapabilities.MC_CAPS_BRIGHTNESS);
+
+            if (HasBrightnessCapability) Attempt(GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness));
         }
     }
 }
