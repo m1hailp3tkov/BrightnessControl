@@ -19,11 +19,11 @@ namespace BrightnessControl
         public SliderForm(IMonitorController monitorController)
         {
             this.monitorController = monitorController;
-            
+
             InitializeComponent();
 
-            this.Height = monitorController.Monitors.Count == 0 
-                ? ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT 
+            this.Height = monitorController.Monitors.Count == 0
+                ? ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT
                 : ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
             this.Width = ApplicationConstants.WINDOW_WIDTH;
 
@@ -31,9 +31,8 @@ namespace BrightnessControl
 
             foreach (var monitor in monitorController.Monitors)
             {
-                //if(monitor.HasBrightnessCapability) 
-                    this.flowLayoutPanel
-                        .Controls.Add(new BrightnessBlock(monitor));
+                this.flowLayoutPanel
+                    .Controls.Add(new BrightnessBlock(monitor));
             }
 
             // add right click exit to notifyicon

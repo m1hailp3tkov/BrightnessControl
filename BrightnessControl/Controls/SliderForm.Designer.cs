@@ -43,6 +43,7 @@
             // 
             // flowLayoutPanel
             // 
+            this.flowLayoutPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.flowLayoutPanel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.flowLayoutPanel.Location = new System.Drawing.Point(-1, -1);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
