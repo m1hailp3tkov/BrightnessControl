@@ -46,6 +46,7 @@ namespace BrightnessControl.Controls
             this.trackBar.TabIndex = 0;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            this.trackBar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.BrightnessBlock_KeyUp);
             this.trackBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBar_MouseUp);
             // 
             // label
@@ -83,6 +84,7 @@ namespace BrightnessControl.Controls
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "BrightnessBlock";
             this.Size = new System.Drawing.Size(320, 45);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.BrightnessBlock_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

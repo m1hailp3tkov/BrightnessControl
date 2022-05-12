@@ -31,6 +31,22 @@ namespace BrightnessControl.Controls
 
         private void trackBar_MouseUp(object sender, MouseEventArgs e)
         {
+            TrySetBrightness();
+        }
+
+        private void BrightnessBlock_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+            {
+                this.Parent.Parent.Hide();
+                return;
+            }
+
+            TrySetBrightness();
+        }
+
+        private void TrySetBrightness()
+        {
             try
             {
                 _monitor.Brightness = (uint)trackBar.Value;

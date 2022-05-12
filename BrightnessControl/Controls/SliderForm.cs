@@ -41,7 +41,6 @@ namespace BrightnessControl
             notifyIcon.ContextMenuStrip = new ContextMenuStrip();
             notifyIcon.ContextMenuStrip.Items.Add(exitItem);
         }
-
         private void ActivateForm()
         {
             this.Show();
@@ -50,8 +49,9 @@ namespace BrightnessControl
             this.BringToFront();
         }
 
-        private void DeactivateForm()
+        private void DeactivateForm(object sender)
         {
+            this.Visible = false;
             this.Hide();
         }
 
@@ -66,14 +66,24 @@ namespace BrightnessControl
             // enter to confirm -> deactivate
             if (e.KeyCode == Keys.Enter)
             {
-                this.DeactivateForm();
+                this.DeactivateForm(sender);
             }
         }
 
         // notifyicon events
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left) this.ActivateForm();
+            //TODO: Intercept lost focus event somehow
+            if (e.Button != MouseButtons.Left) return;
+
+            if (Visible) { DeactivateForm(sender); return; }
+
+            if (!Visible) ActivateForm();
+        }
+
+        private void SliderForm_LostFocus(object sender, EventArgs e)
+        {
+            this.DeactivateForm(sender);
         }
     }
 }

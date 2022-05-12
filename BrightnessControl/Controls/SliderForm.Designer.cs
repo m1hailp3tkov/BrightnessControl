@@ -64,6 +64,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SliderForm";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+            this.Deactivate += new System.EventHandler(this.SliderForm_LostFocus);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SliderForm_FormClosed);
             this.ResumeLayout(false);
 
