@@ -32,26 +32,24 @@ namespace BrightnessControl.MonitorController
         public bool Equals(PhysicalMonitor? other)
         {
             if (other == null) return false;
-            return this.Handle == other.Handle;
+            return Handle == other.Handle;
         }
 
         public PhysicalMonitor(IntPtr handle, int deviceNumber)
         {
-            this._handle = handle;
-            this.DeviceNumber = deviceNumber;
-            this._device = new DISPLAY_DEVICE();
+            _handle = handle;
+            DeviceNumber = deviceNumber;
+            _device = new DISPLAY_DEVICE();
             _device.cb = Marshal.SizeOf(_device);
 
             // get device information
             Calls.Attempt(Calls.EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
 
-            bool canGetCapabilities = Calls.GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
+            var canGetCapabilities = Calls.GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
 
-            if (canGetCapabilities && ((MonitorCapabilities)_capabilitiesFlags).HasFlag(MonitorCapabilities.MC_CAPS_BRIGHTNESS))
-            {
-                // set bool only if method is successful
-                this.HasBrightnessCapability = Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
-            }
+            HasBrightnessCapability = canGetCapabilities
+                || Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
+
         }
     }
 }

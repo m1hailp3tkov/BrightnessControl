@@ -11,7 +11,6 @@ namespace BrightnessControl.MonitorController
         public Win32MonitorController()
         {
             _monitors = new List<IPhysicalMonitor>();
-            Initialize();
         }
 
         public void Initialize()
