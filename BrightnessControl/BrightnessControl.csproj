@@ -6,12 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>Properties\Images\icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="Properties\Images\icon.ico" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Management" Version="6.0.0" />

@@ -1,10 +1,5 @@
 ﻿using BrightnessControl.Native;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
-using static BrightnessControl.Native.Calls;
-using static BrightnessControl.Native.Constants;
-using static BrightnessControl.Native.Flags;
-using static BrightnessControl.Native.Structures;
 
 namespace BrightnessControl.MonitorController
 {
@@ -30,7 +25,7 @@ namespace BrightnessControl.MonitorController
                     throw new ArgumentOutOfRangeException(nameof(value),
                         $"Brightness param is out of acceptable range for monitor {_device.DeviceName} [{_minBrightness} ~ {_maxBrightness}]");
 
-                Attempt(SetMonitorBrightness(Handle, value));
+                Calls.Attempt(Calls.SetMonitorBrightness(Handle, value));
             }
         }
 
@@ -48,14 +43,14 @@ namespace BrightnessControl.MonitorController
             _device.cb = Marshal.SizeOf(_device);
 
             // get device information
-            Attempt(EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
+            Calls.Attempt(Calls.EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
 
-            bool canGetCapabilities = GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
+            bool canGetCapabilities = Calls.GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
 
             if (canGetCapabilities && ((MonitorCapabilities)_capabilitiesFlags).HasFlag(MonitorCapabilities.MC_CAPS_BRIGHTNESS))
             {
                 // set bool only if method is successful
-                this.HasBrightnessCapability = GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
+                this.HasBrightnessCapability = Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
             }
         }
     }

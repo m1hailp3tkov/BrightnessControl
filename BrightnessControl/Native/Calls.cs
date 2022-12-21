@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
-using static BrightnessControl.Native.Structures;
 
 namespace BrightnessControl.Native
 {
@@ -14,10 +13,10 @@ namespace BrightnessControl.Native
         public static extern bool EnumDisplayMonitors(IntPtr hDC, IntPtr lpRect, EnumDisplayMonitorsCallback callback, int dwData);
 
         [DllImport("User32.dll", EntryPoint = "EnumDisplayDevices", SetLastError = true)]
-        public static extern bool EnumDisplayDevices(string lpDevice, int iDevNum, ref Structures.DISPLAY_DEVICE lpDisplayDevice, int dwFlags);
+        public static extern bool EnumDisplayDevices(string lpDevice, int iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, int dwFlags);
 
         [DllImport("User32.dll", EntryPoint = "GetMonitorInfo", SetLastError = true)]
-        public static extern bool GetMonitorInfo(IntPtr hmonitor, [In, Out] ref Structures.MONITORINFOEX info);
+        public static extern bool GetMonitorInfo(IntPtr hmonitor, [In, Out] ref MONITORINFOEX info);
 
         [DllImport("user32.dll")]
         public extern static int SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
@@ -40,18 +39,7 @@ namespace BrightnessControl.Native
 
         [DllImport("dxva2.dll", EntryPoint = "GetPhysicalMonitorsFromHMONITOR", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, uint dwPhysicalMonitorArraySize, [Out] Structures.PHYSICAL_MONITOR[] pPhysicalMonitorArray);
-
-
-        [DllImport("dxva2.dll", EntryPoint = "DestroyPhysicalMonitors", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DestroyPhysicalMonitors(uint dwPhysicalMonitorArraySize, [Out] Native.Structures.PHYSICAL_MONITOR[] pPhysicalMonitorArray);
-
-
-        [DllImport("dxva2.dll", EntryPoint = "GetMonitorTechnologyType", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMonitorTechnologyType(IntPtr hMonitor, ref Flags.MC_DISPLAY_TECHNOLOGY_TYPE pdtyDisplayTechnologyType);
-
+        public static extern bool GetPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, uint dwPhysicalMonitorArraySize, [Out] PHYSICAL_MONITOR[] pPhysicalMonitorArray);
 
         [DllImport("dxva2.dll", EntryPoint = "GetMonitorCapabilities", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -69,9 +57,9 @@ namespace BrightnessControl.Native
         #endregion
 
         #region Delegates
-        public delegate bool EnumDisplayMonitorsCallback(IntPtr hMonitor, IntPtr hDC, ref Structures.RECT pRect, int dwData);
+        public delegate bool EnumDisplayMonitorsCallback(IntPtr hMonitor, IntPtr hDC, ref RECT pRect, int dwData);
 
-        public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Structures.RECT lprcMonitor, IntPtr dwData);
+        public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
         #endregion
 
         #region Helpers

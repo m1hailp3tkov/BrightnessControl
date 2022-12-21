@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using BrightnessControl.Native;
-using static BrightnessControl.Native.Calls;
-using static BrightnessControl.Native.Constants;
+﻿using BrightnessControl.Native;
 
 namespace BrightnessControl.MonitorController
 {
@@ -20,32 +10,35 @@ namespace BrightnessControl.MonitorController
 
         public Win32MonitorController()
         {
+            _monitors = new List<IPhysicalMonitor>();
             Initialize();
         }
 
         public void Initialize()
         {
-            _monitors = new List<IPhysicalMonitor>();
+            _monitors.Clear();
 
             //Enumerate all monitors
-            Attempt(EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, Callback, 0));
+            Calls.Attempt(Calls.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, Callback, 0));
 
-            _monitors = _monitors.Distinct().ToList();
+            _monitors = _monitors.Distinct()
+                .Reverse()
+                .ToList();
         }
 
-        protected virtual bool Callback(IntPtr hMonitor, IntPtr hDC, ref Structures.RECT pRect, int dwData)
+        protected virtual bool Callback(IntPtr hMonitor, IntPtr hDC, ref RECT pRect, int dwData)
         {
             uint numberOfMonitors = 0;
-            Structures.PHYSICAL_MONITOR[] physicalMonitors;
+            PHYSICAL_MONITOR[] physicalMonitors;
 
             //get number of physical monitors
-            Attempt(GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref numberOfMonitors));
+            Calls.Attempt(Calls.GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref numberOfMonitors));
 
             //initialize physical monitor array with specified size
-            physicalMonitors = new Structures.PHYSICAL_MONITOR[numberOfMonitors];
+            physicalMonitors = new PHYSICAL_MONITOR[numberOfMonitors];
 
             //get physical monitors
-            Attempt(GetPhysicalMonitorsFromHMONITOR(hMonitor, numberOfMonitors, physicalMonitors));
+            Calls.Attempt(Calls.GetPhysicalMonitorsFromHMONITOR(hMonitor, numberOfMonitors, physicalMonitors));
 
             foreach(var physicalMonitor in physicalMonitors)
             {

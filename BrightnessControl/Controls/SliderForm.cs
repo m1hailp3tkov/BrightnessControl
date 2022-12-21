@@ -1,9 +1,6 @@
 ﻿using BrightnessControl.Controls;
 using BrightnessControl.Native;
 using BrightnessControl.Helpers;
-using static BrightnessControl.Native.Structures;
-using static BrightnessControl.Native.Calls;
-using System.Runtime.InteropServices;
 
 namespace BrightnessControl
 {
@@ -26,10 +23,7 @@ namespace BrightnessControl
         private Point GetLocation()
         {
             RECT scBounds = new RECT();
-            GetWindowRect(GetDesktopWindow(), ref scBounds);
-
-            //int x = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
-            //int y = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
+            Calls.Attempt(Calls.GetWindowRect(Calls.GetDesktopWindow(), ref scBounds));
 
             int x = scBounds.right - this.Width;
             int y = scBounds.bottom - this.Height - 30;
@@ -39,6 +33,11 @@ namespace BrightnessControl
 
         private void SetUpForm(bool hide = true)
         {
+            Icon icon = notifyIcon.Icon;
+
+            this.notifyIcon.Icon = Properties.Resources.IconRefresh;
+            this.notifyIcon.Text = "Detecting monitors...";
+            
             monitorController.Initialize();
 
             this.Height = ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
@@ -55,37 +54,33 @@ namespace BrightnessControl
                 this.flowLayoutPanel
                     .Controls.Add(new BrightnessBlock(monitor));
             }
+
+            this.notifyIcon.Icon = icon;
+            this.notifyIcon.Text = "Brightness";
         }
 
         private void SetUpContextMenu()
         {
-            var refreshItem = new ToolStripMenuItem("Refresh", null, (sender, e) => {
-                Icon icon = notifyIcon.Icon;
-                this.notifyIcon.Icon = Properties.Resources.IconRefresh;
-                this.notifyIcon.Text = "Refreshing...";
-                SetUpForm(hide: false);
-                this.notifyIcon.Icon = icon;
-                this.notifyIcon.Text = "Brightness";
-            });
+            var refreshItem = new ToolStripMenuItem("Rescan monitors", null, (sender, e) => SetUpForm());
+
             var exitItem = new ToolStripMenuItem("Exit", null, (sender, e) => Application.Exit());
 
             notifyIcon.ContextMenuStrip = new ContextMenuStrip();
-            notifyIcon.ContextMenuStrip.Items.Add(exitItem);
             notifyIcon.ContextMenuStrip.Items.Add(refreshItem);
+            notifyIcon.ContextMenuStrip.Items.Add(exitItem);
         }
 
         private void ActivateForm()
         {
-            this.Show();
-            this.Activate();
-            this.WindowState = FormWindowState.Normal;
-            this.BringToFront();
+            WindowState = FormWindowState.Normal;
+            Show();
+            Activate();
+            BringToFront();
         }
 
-        private void DeactivateForm(object sender)
+        private void DeactivateForm()
         {
-            this.Visible = false;
-            this.Hide();
+            Hide();
         }
 
         private void SliderForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -97,36 +92,28 @@ namespace BrightnessControl
         private void trackBar_KeyDown(object sender, KeyEventArgs e)
         {
             // enter to confirm -> deactivate
-            if (e.KeyCode == Keys.Enter)
-            {
-                this.DeactivateForm(sender);
-            }
+            if (e.KeyCode == Keys.Enter) DeactivateForm();
         }
 
         // notifyicon events
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            //TODO: Intercept lost focus event somehow
             if (e.Button != MouseButtons.Left) return;
 
-            if (Visible) { DeactivateForm(sender); return; }
-
-            if (!Visible) ActivateForm();
+            if (Visible) DeactivateForm();
+            else ActivateForm();
         }
 
         private void SliderForm_LostFocus(object sender, EventArgs e)
         {
-            this.DeactivateForm(sender);
+            DeactivateForm();
         }
 
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
 
-            if(m.Msg == Constants.WM_DISPLAYCHANGE)
-            {
-                SetUpForm();
-            }
+            if(m.Msg == (uint)WM.DISPLAYCHANGE) SetUpForm();
         }
     }
 }
