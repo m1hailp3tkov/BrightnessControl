@@ -19,7 +19,7 @@ namespace BrightnessControl.MonitorController
 
         public IntPtr Handle => _handle;
         public int DeviceNumber { get; private set; }
-        //public bool HasBrightnessCapability { get; private set; }
+        public bool HasBrightnessCapability { get; private set; } = false;
 
         public uint Brightness
         {
@@ -27,7 +27,8 @@ namespace BrightnessControl.MonitorController
             set
             {
                 if (value < _minBrightness || value > _maxBrightness)
-                    throw new ArgumentOutOfRangeException(nameof(value), $"Brightness param is out of acceptable range for monitor [{_minBrightness} ~ {_maxBrightness}]");
+                    throw new ArgumentOutOfRangeException(nameof(value),
+                        $"Brightness param is out of acceptable range for monitor {_device.DeviceName} [{_minBrightness} ~ {_maxBrightness}]");
 
                 Attempt(SetMonitorBrightness(Handle, value));
             }
@@ -49,8 +50,13 @@ namespace BrightnessControl.MonitorController
             // get device information
             Attempt(EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
 
-            // get brightness values
-            Attempt(GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness));
+            bool canGetCapabilities = GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
+
+            if (canGetCapabilities && ((MonitorCapabilities)_capabilitiesFlags).HasFlag(MonitorCapabilities.MC_CAPS_BRIGHTNESS))
+            {
+                // set bool only if method is successful
+                this.HasBrightnessCapability = GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
+            }
         }
     }
 }

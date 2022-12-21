@@ -20,6 +20,17 @@
             base.Dispose(disposing);
         }
 
+        private void SetUpFlowLayoutPanel()
+        {
+            this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
+            this.flowLayoutPanel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.flowLayoutPanel.Location = new System.Drawing.Point(-1, -1);
+            this.flowLayoutPanel.Name = "flowLayoutPanel";
+            this.flowLayoutPanel.Size = new System.Drawing.Size(321, 80);
+            this.flowLayoutPanel.TabIndex = 0;
+        }
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -54,7 +65,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.ClientSize = new System.Drawing.Size(319, 78);
             this.Controls.Add(this.flowLayoutPanel);
             this.ForeColor = System.Drawing.SystemColors.Control;

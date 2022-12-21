@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using static BrightnessControl.Native.Structures;
 
 namespace BrightnessControl.Native
 {
@@ -9,17 +10,24 @@ namespace BrightnessControl.Native
         [DllImport("user32.dll", EntryPoint = "MonitorFromWindow", SetLastError = true)]
         public static extern IntPtr MonitorFromWindow([In] IntPtr hwnd, uint dwFlags);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", EntryPoint = "EnumDisplayMonitors", SetLastError = true)]
         public static extern bool EnumDisplayMonitors(IntPtr hDC, IntPtr lpRect, EnumDisplayMonitorsCallback callback, int dwData);
 
-        [DllImport("User32.dll")]
+        [DllImport("User32.dll", EntryPoint = "EnumDisplayDevices", SetLastError = true)]
         public static extern bool EnumDisplayDevices(string lpDevice, int iDevNum, ref Structures.DISPLAY_DEVICE lpDisplayDevice, int dwFlags);
 
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        [DllImport("User32.dll", EntryPoint = "GetMonitorInfo", SetLastError = true)]
         public static extern bool GetMonitorInfo(IntPtr hmonitor, [In, Out] ref Structures.MONITORINFOEX info);
 
         [DllImport("user32.dll")]
         public extern static int SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
+
+        [DllImport("user32.dll", SetLastError = false)]
+        public static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
         #endregion
 
 

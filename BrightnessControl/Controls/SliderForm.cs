@@ -1,46 +1,79 @@
 ﻿using BrightnessControl.Controls;
 using BrightnessControl.Native;
-using System.ComponentModel;
 using BrightnessControl.Helpers;
+using static BrightnessControl.Native.Structures;
+using static BrightnessControl.Native.Calls;
+using System.Runtime.InteropServices;
 
 namespace BrightnessControl
 {
     public partial class SliderForm : Form
     {
         private IMonitorController monitorController;
-
-        private Point GetLocation()
-        {
-            int x = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
-            int y = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
-            return new Point(x, y);
-        }
-
         public SliderForm(IMonitorController monitorController)
         {
             this.monitorController = monitorController;
 
+            monitorController.Initialize();
+
             InitializeComponent();
 
-            this.Height = monitorController.Monitors.Count == 0
-                ? ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT
-                : ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
+            SetUpForm();
+            
+            SetUpContextMenu();
+        }
+
+        private Point GetLocation()
+        {
+            RECT scBounds = new RECT();
+            GetWindowRect(GetDesktopWindow(), ref scBounds);
+
+            //int x = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
+            //int y = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
+
+            int x = scBounds.right - this.Width;
+            int y = scBounds.bottom - this.Height - 30;
+
+            return new Point(x, y);
+        }
+
+        private void SetUpForm(bool hide = true)
+        {
+            monitorController.Initialize();
+
+            this.Height = ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
             this.Width = ApplicationConstants.WINDOW_WIDTH;
 
             this.Location = GetLocation();
+
+            if(hide) this.Visible = false;
+
+            this.flowLayoutPanel.Controls.Clear();
 
             foreach (var monitor in monitorController.Monitors)
             {
                 this.flowLayoutPanel
                     .Controls.Add(new BrightnessBlock(monitor));
             }
+        }
 
-            // add right click exit to notifyicon
-            // TODO: move to design?
+        private void SetUpContextMenu()
+        {
+            var refreshItem = new ToolStripMenuItem("Refresh", null, (sender, e) => {
+                Icon icon = notifyIcon.Icon;
+                this.notifyIcon.Icon = Properties.Resources.IconRefresh;
+                this.notifyIcon.Text = "Refreshing...";
+                SetUpForm(hide: false);
+                this.notifyIcon.Icon = icon;
+                this.notifyIcon.Text = "Brightness";
+            });
             var exitItem = new ToolStripMenuItem("Exit", null, (sender, e) => Application.Exit());
+
             notifyIcon.ContextMenuStrip = new ContextMenuStrip();
             notifyIcon.ContextMenuStrip.Items.Add(exitItem);
+            notifyIcon.ContextMenuStrip.Items.Add(refreshItem);
         }
+
         private void ActivateForm()
         {
             this.Show();
@@ -84,6 +117,16 @@ namespace BrightnessControl
         private void SliderForm_LostFocus(object sender, EventArgs e)
         {
             this.DeactivateForm(sender);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            if(m.Msg == Constants.WM_DISPLAYCHANGE)
+            {
+                SetUpForm();
+            }
         }
     }
 }

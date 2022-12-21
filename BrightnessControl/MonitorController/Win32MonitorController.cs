@@ -47,8 +47,15 @@ namespace BrightnessControl.MonitorController
             //get physical monitors
             Attempt(GetPhysicalMonitorsFromHMONITOR(hMonitor, numberOfMonitors, physicalMonitors));
 
-            //add to monitor list
-            foreach(var physicalMonitor in physicalMonitors) _monitors.Add(new PhysicalMonitor(physicalMonitor.hPhysicalMonitor, _monitors.Count));
+            foreach(var physicalMonitor in physicalMonitors)
+            {
+                // create physical monitor object
+                var monitor = new PhysicalMonitor(physicalMonitor.hPhysicalMonitor, _monitors.Count);
+
+                // add to list only if supports brightness
+                if(monitor.HasBrightnessCapability) _monitors.Add(monitor);
+            }
+            
 
             //Continue enumeration
             return true;
