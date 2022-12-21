@@ -1,22 +1,21 @@
 ﻿using BrightnessControl.Controls;
 using BrightnessControl.Native;
 using BrightnessControl.Helpers;
+using System.Diagnostics;
 
 namespace BrightnessControl
 {
     public partial class SliderForm : Form
     {
-        private IMonitorController monitorController;
+        private IMonitorController _monitorController;
+
         public SliderForm(IMonitorController monitorController)
         {
-            this.monitorController = monitorController;
-
-            monitorController.Initialize();
+            _monitorController = monitorController;
 
             InitializeComponent();
 
             SetUpForm();
-            
             SetUpContextMenu();
         }
 
@@ -25,45 +24,43 @@ namespace BrightnessControl
             RECT scBounds = new RECT();
             Calls.Attempt(Calls.GetWindowRect(Calls.GetDesktopWindow(), ref scBounds));
 
-            int x = scBounds.right - this.Width;
-            int y = scBounds.bottom - this.Height - 30;
+            int x = scBounds.right - Width;
+            int y = scBounds.bottom - Height - 30;
 
             return new Point(x, y);
         }
 
-        private void SetUpForm(bool hide = true)
+        private void SetUpLayout()
         {
-            Icon icon = notifyIcon.Icon;
+            Visible = false;
+            Height = ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * _monitorController.Monitors.Count;
+            Width = ApplicationConstants.WINDOW_WIDTH;
+            Location = GetLocation();
 
-            this.notifyIcon.Icon = Properties.Resources.IconRefresh;
-            this.notifyIcon.Text = "Detecting monitors...";
-            
-            monitorController.Initialize();
-
-            this.Height = ApplicationConstants.TRACKBAR_CONTAINER_HEIGHT * monitorController.Monitors.Count;
-            this.Width = ApplicationConstants.WINDOW_WIDTH;
-
-            this.Location = GetLocation();
-
-            if(hide) this.Visible = false;
-
-            this.flowLayoutPanel.Controls.Clear();
-
-            foreach (var monitor in monitorController.Monitors)
+            flowLayoutPanel.Controls.Clear();
+            foreach (var monitor in _monitorController.Monitors)
             {
-                this.flowLayoutPanel
-                    .Controls.Add(new BrightnessBlock(monitor));
+                flowLayoutPanel.Controls
+                    .Add(new BrightnessBlock(monitor));
             }
+        }
 
-            this.notifyIcon.Icon = icon;
-            this.notifyIcon.Text = "Brightness";
+        private void SetUpForm()
+        {
+            notifyIcon.Icon = Properties.Resources.IconLoader;
+            notifyIcon.Text = "Detecting monitors...";
+            
+            _monitorController.Initialize();
+            SetUpLayout();
+
+            notifyIcon.Icon = Properties.Resources.Icon;
+            notifyIcon.Text = "Brightness";
         }
 
         private void SetUpContextMenu()
         {
-            var refreshItem = new ToolStripMenuItem("Rescan monitors", null, (sender, e) => SetUpForm());
-
-            var exitItem = new ToolStripMenuItem("Exit", null, (sender, e) => Application.Exit());
+            var refreshItem = new ToolStripMenuItem("Rescan monitors", Properties.Resources.IconRefresh.ToBitmap(), (sender, e) => SetUpForm());
+            var exitItem = new ToolStripMenuItem("Exit", Properties.Resources.IconExit, (sender, e) => Application.Exit());
 
             notifyIcon.ContextMenuStrip = new ContextMenuStrip();
             notifyIcon.ContextMenuStrip.Items.Add(refreshItem);

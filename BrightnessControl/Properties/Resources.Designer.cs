@@ -71,11 +71,51 @@ namespace BrightnessControl.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconExit {
+            get {
+                object obj = ResourceManager.GetObject("IconExit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        public static System.Drawing.Icon IconLoader {
+            get {
+                object obj = ResourceManager.GetObject("IconLoader", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         public static System.Drawing.Icon IconRefresh {
             get {
                 object obj = ResourceManager.GetObject("IconRefresh", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        public static System.Drawing.Icon IconRescanDark {
+            get {
+                object obj = ResourceManager.GetObject("IconRescanDark", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        public static System.Drawing.Icon IconRescanLight {
+            get {
+                object obj = ResourceManager.GetObject("IconRescanLight", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
