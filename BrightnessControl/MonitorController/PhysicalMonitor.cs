@@ -48,7 +48,7 @@ namespace BrightnessControl.MonitorController
             var canGetCapabilities = Calls.GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
 
             HasBrightnessCapability = canGetCapabilities
-                || Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
+                && Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
 
         }
     }
