@@ -46,10 +46,10 @@ namespace BrightnessControl.MonitorController
             Calls.Attempt(Calls.EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
 
             var canGetCapabilities = Calls.GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
+            
+            var canGetMonitorBrightness = Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
 
-            HasBrightnessCapability = canGetCapabilities
-                && Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
-
+            HasBrightnessCapability = canGetCapabilities || canGetMonitorBrightness;
         }
     }
 }
