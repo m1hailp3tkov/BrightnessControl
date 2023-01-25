@@ -5,7 +5,6 @@ namespace BrightnessControl.MonitorController
 {
     public class PhysicalMonitor : IPhysicalMonitor, IEquatable<PhysicalMonitor>
     {
-        private uint _capabilitiesFlags = 0;
         private uint _supportedColorTemperatures = 0;
         private uint _minBrightness = 0, _maxBrightness = 0, _currentBrightness = 0;
 
@@ -45,11 +44,7 @@ namespace BrightnessControl.MonitorController
             // get device information
             Calls.Attempt(Calls.EnumDisplayDevices(_device.DeviceName, DeviceNumber, ref _device, 0));
 
-            var canGetCapabilities = Calls.GetMonitorCapabilities(_handle, ref _capabilitiesFlags, ref _supportedColorTemperatures);
-            
-            var canGetMonitorBrightness = Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
-
-            HasBrightnessCapability = canGetCapabilities || canGetMonitorBrightness;
+            HasBrightnessCapability = Calls.GetMonitorBrightness(Handle, ref _minBrightness, ref _currentBrightness, ref _maxBrightness);
         }
     }
 }

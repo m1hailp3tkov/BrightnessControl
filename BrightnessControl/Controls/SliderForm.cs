@@ -1,7 +1,6 @@
 ﻿using BrightnessControl.Controls;
 using BrightnessControl.Native;
 using BrightnessControl.Helpers;
-using System.Diagnostics;
 
 namespace BrightnessControl
 {

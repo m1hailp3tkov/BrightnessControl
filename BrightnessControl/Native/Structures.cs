@@ -53,11 +53,4 @@ namespace BrightnessControl.Native
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string DeviceName;
     }
-
-    /// <summary>
-    /// Windows Messages
-    /// Defined in winuser.h from Windows SDK v6.1
-    /// Documentation pulled from MSDN.
-    /// </summary>
-    
 }

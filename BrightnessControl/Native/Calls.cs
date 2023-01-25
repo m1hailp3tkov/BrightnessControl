@@ -29,8 +29,6 @@ namespace BrightnessControl.Native
         public static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
         #endregion
 
-
-
         #region dxva2.dll
         [DllImport("dxva2.dll", EntryPoint = "GetNumberOfPhysicalMonitorsFromHMONITOR", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

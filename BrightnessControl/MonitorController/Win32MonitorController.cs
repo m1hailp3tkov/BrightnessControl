@@ -47,7 +47,6 @@ namespace BrightnessControl.MonitorController
                 // add to list only if supports brightness
                 if(monitor.HasBrightnessCapability) _monitors.Add(monitor);
             }
-            
 
             //Continue enumeration
             return true;
